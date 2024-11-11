@@ -24,7 +24,7 @@ struct LunchView: View {
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.blue, lineWidth: 1)
+                                    .stroke(.accent, lineWidth: 1)
                             )
                         Text(viewModel.data.lunch.key1.name)
                         Spacer()
@@ -45,7 +45,7 @@ struct LunchView: View {
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.blue, lineWidth: 1)
+                                    .stroke(.accent, lineWidth: 1)
                             )
                         Text(viewModel.data.lunch.key2.name)
                         Spacer()
@@ -66,7 +66,7 @@ struct LunchView: View {
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.blue, lineWidth: 1)
+                                    .stroke(.accent, lineWidth: 1)
                             )
                         Text(viewModel.data.lunch.key3.name)
                         Spacer()
@@ -87,7 +87,7 @@ struct LunchView: View {
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.blue, lineWidth: 1)
+                                    .stroke(.accent, lineWidth: 1)
                             )
                         Text(viewModel.data.lunch.key4.name)
                         Spacer()
@@ -108,7 +108,7 @@ struct LunchView: View {
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.blue, lineWidth: 1)
+                                    .stroke(.accent, lineWidth: 1)
                             )
                         Text(viewModel.data.lunch.key5.name)
                         Spacer()
@@ -129,7 +129,7 @@ struct LunchView: View {
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.blue, lineWidth: 1)
+                                    .stroke(.accent, lineWidth: 1)
                             )
                         Text(viewModel.data.lunch.key6.replacingOccurrences(of: "<br>", with: ", "))
                         Spacer()

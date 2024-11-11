@@ -32,5 +32,5 @@ struct WebView: UIViewRepresentable {
 }
 
 #Preview {
-    ContentView(defaultSelection: 1)
+    ContentView()
 }

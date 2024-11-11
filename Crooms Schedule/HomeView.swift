@@ -34,6 +34,9 @@ struct HomeView: View {
             .modifier(GroupMod())
             
         }
+        .refreshable {
+            viewModel.fetchMessage()
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
     
@@ -51,5 +54,5 @@ struct GroupMod: ViewModifier {
 }
 
 #Preview {
-    ContentView(defaultSelection: 0)
+    ContentView()
 }

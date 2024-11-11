@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    var defaultSelection: Int = 0
+    @AppStorage("selectedTab") private var selectedTab: Int = 0
+    private var viewModel = CBSHDataViewModel()
     
     var body: some View {
-        TabView(selection: .constant(defaultSelection)) {
+        TabView(selection: $selectedTab) {
             Tab("Home", systemImage: "house", value: 0) {
                 HomeView()
             }

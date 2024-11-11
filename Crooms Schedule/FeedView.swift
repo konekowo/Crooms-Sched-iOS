@@ -10,16 +10,68 @@ import WebKit
 
 struct FeedView: View {
     @StateObject private var viewModel = FeedViewModel()
+    @State private var showingFeedUpdate = false
+    @State private var feedUpdate = ""
+    @State private var feedLink = ""
 
     var body: some View {
-        WebFeedView(feedItems: viewModel.data.data)
-            .edgesIgnoringSafeArea(.all)
+        HStack {
+            Text("Feed")
+                .font(.title)
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+            Button("Add Feed Update") {
+                showingFeedUpdate = true
+            }
+            .padding()
+            .alert("Feed Update", isPresented: $showingFeedUpdate) {
+                TextField("Feed Update", text: $feedUpdate)
+                TextField("Link (optional)", text: $feedLink)
+                Button("Ok", action: sendFeedUpdate)
+                Button("Cancel", role: .cancel) {}
+            }
+        }
+        WebFeedView(feedItems: $viewModel.data.data)
+    }
+    
+    func sendFeedUpdate() {
+        var data = "";
+        if (!feedLink.isEmpty) {
+            data = "<a target=CBSHfeed href=\(feedLink)>\(feedUpdate)</a>"
+        } else {
+            data = feedUpdate
+        }
+        
+        guard let url = URL(string: "https://api.croomssched.tech/feed") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Create the JSON body
+        let jsonBody = ["data": data]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: jsonBody)
+
+        // Send the request
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error:", error)
+                return
+            }
+            if let data = data, let responseString = String(data: data, encoding: .utf8) {
+                print("Response:", responseString)
+                viewModel.fetchMessage()
+            }
+        }
+        .resume()
     }
     
 }
 
 struct WebFeedView: UIViewRepresentable {
-    let feedItems: [FeedItem]
+    @Environment(\.self) var environment
+    @Binding var feedItems: [FeedItem]
     
     func makeUIView(context: Context) -> WKWebView {
         WKWebView()
@@ -27,17 +79,24 @@ struct WebFeedView: UIViewRepresentable {
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
         var body = ""
-        
         feedItems.forEach { feedItem in
             body += "<div class='feedItem'>\(feedItem.data)</div>"
         }
         
-        uiView.loadHTMLString( 
+        
+        let color = Color.accent.resolve(in: environment)
+        let htmlColor = "rgb(\(round(color.red * 255)), \(round(color.green * 255)), \(round(color.blue * 255)))"
+        
+        
+        uiView.loadHTMLString(
             """
             <!DOCTYPE html>
             <html>
                 <head> 
                     <style>
+                        :root {
+                            --accent: \(htmlColor);
+                        }
                         body {
                             font-size: 2.5rem;
                             font-family: -apple-system;
@@ -71,8 +130,7 @@ struct WebFeedView: UIViewRepresentable {
                             overflow: auto;
                         }
                         a {
-                            color: #0b84ff;
-                            text-decoration: none;
+                            color: var(--accent);
                         }
                         .rainbow, rainbow {
                             animation: anim-rainbow 5s infinite;
@@ -159,7 +217,6 @@ struct WebFeedView: UIViewRepresentable {
                     </style>
                 </head> 
                 <body>
-                    <h2>Feed</h2>
                     \(body)
                 </body>
             </html>
@@ -169,5 +226,5 @@ struct WebFeedView: UIViewRepresentable {
 }
 
 #Preview {
-    ContentView(defaultSelection: 2)
+    ContentView()
 }
